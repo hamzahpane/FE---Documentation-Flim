@@ -1,59 +1,71 @@
-import { useState, useEffect } from "react";
-import gambar from "../assets/Hero (2).jpg";
-import {
-  useAppDispatch,
-  useAppSelector,
-} from "./Redux/Store/Hooks/productHook";
-import {
-  fetchRecipes,
-  setSearchName,
-} from "./Redux/Store/features/prodcutSilce";
+import { fetchGetFilmRandom } from "./redux/Feture/libs/Movie/MovieApi";
+import { useEffect } from "react";
+import { useAppDispatch, useAppSelector } from "./redux/Hooks/Hooks";
+import { FaStar } from "react-icons/fa"; // Import ikon bintang
 
 const Hero = () => {
   const dispatch = useAppDispatch();
-  const searchName = useAppSelector((state) => state.ricepes.search_name);
-  const [searchInput, setSearchInput] = useState(searchName);
+  const movies = useAppSelector((state) => state.movie.movies);
+  const loading = useAppSelector((state) => state.movie.loading);
+  const error = useAppSelector((state) => state.movie.error);
 
   useEffect(() => {
-    dispatch(fetchRecipes(searchInput));
-  }, [dispatch, searchInput]);
+    dispatch(fetchGetFilmRandom());
+  }, [dispatch]);
 
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchInput(e.target.value);
-  };
+  // Fungsi untuk menghasilkan bintang berdasarkan rating
+  const renderStars = (rating: any) => {
+    const stars = [];
+    const maxStars = 10; // Maksimal 5 bintang
 
-  const handleSubmit = () => {
-    dispatch(setSearchName(searchInput));
-    dispatch(fetchRecipes(searchInput));
+    for (let i = 0; i < maxStars; i++) {
+      stars.push(
+        <FaStar
+          key={i}
+          className={i < rating ? "text-yellow-400" : "text-gray-400"}
+        />
+      );
+    }
+
+    return stars;
   };
 
   return (
-    <div className="relative w-full h-96 flex items-center justify-center">
-      <div className="absolute inset-0 bg-black opacity-50"></div>
-      <img src={gambar} alt="Hero" className="w-full h-full object-cover" />
+    <div className="justify-center mt-4">
+      {loading && <p className="text-white text-center">Loading...</p>}
+      {error && <p className="text-white">Error: {error}</p>}
 
-      <div className="absolute z-10 flex flex-col items-center justify-center w-full h-full text-center">
-        <h1 className="text-5xl font-bebas text-white text-center">
-          Best Recipes Online Learning Master
-        </h1>
-        <p className="text-3xl mt-2 font-bebas text-gray-200 text-center">
-          Watch and learn now
-        </p>
-        <div className="flex items-center mt-4 p-2 border bg-white rounded-2xl">
-          <input
-            type="text"
-            value={searchInput}
-            onChange={handleSearch}
-            placeholder="Search recipes..."
-            className="flex-grow p-1 border-none focus:outline-none"
-          />
-          <button
-            className="ml-2 p-1 bg-black text-white rounded"
-            onClick={handleSubmit}
+      <div className="flex flex-col items-center justify-center w-full">
+        {movies.map((movie) => (
+          <div
+            key={movie.id}
+            className="relative w-full max-w-7xl h-96 overflow-hidden p-2"
           >
-            Search
-          </button>
-        </div>
+            {/* Gambar sebagai latar belakang penuh */}
+            <div className="absolute inset-0 bg-black bg-opacity-40" />
+            <img
+              src={movie.poster_path}
+              alt={movie.original_title}
+              className="w-full h-full object-cover rounded-md"
+            />
+            {/* Teks di sebelah kiri */}
+            <div className="absolute left-0 top-0 p-2 flex flex-col justify-center bg-transparent w-full sm:w-1/2 h-full mx-2 ">
+              <h2 className="text-lg sm:text-xl font-semibold text-white font-mono text-start mb-2">
+                {movie.original_title}
+              </h2>
+              <p className="text-xs sm:text-sm text-gray-300 font-mono mb-1">
+                Release Date: {movie.release_date}
+              </p>
+
+              <div className="flex items-center mb-1">
+                {renderStars(Math.round(movie.vote_average))}
+              </div>
+              <p className="text-xs sm:text-sm text-white font-mono">
+                Overview: {movie.overview}
+              </p>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );

@@ -7,6 +7,11 @@ export default {
         bebas: ['"Bebas Neue"', "sans-serif"],
         Karla: ['"Karla"', "sans-serif"],
         Robot: ['"Roboto"', " sans-serif"],
+        oldStandard: ['"Old Standard TT"', "serif"],
+      },
+      colors: {
+        customGreen: "#181C14",
+        customBalck: "#151515",
       },
     },
   },

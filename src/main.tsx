@@ -2,25 +2,29 @@ import * as React from "react";
 import * as ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./index.css";
-import Home from "./Page/Home";
+import Login from "./Page/Login";
+import Dasbord from "./Page/Dasbord";
+import PageMovie from "./Page/PageMovie";
 import { Provider } from "react-redux";
-import store from "./Component/Redux/store";
-import RecipeDetail from "./Component/RecipeDetail";
-import RecipeList from "./Component/RecipeList";
-
+import store from "./Component/redux/Feture/strore";
+import Footer from "./Page/Footer";
 // Perbaikan rute
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Home />,
+    element: <Login />,
   },
   {
-    path: "/recipe/:recipeId", // Perbaiki dari `path="/recipe/:recipeId"`
-    element: <RecipeDetail />, // Perbaiki dari `element={<RecipeDetail />}`
+    path: "/Dasbord",
+    element: <Dasbord />,
   },
   {
-    path: "/Recipelist",
-    element: <RecipeList />,
+    path: "/PageMovie/:id",
+    element: <PageMovie />,
+  },
+  {
+    path: "/Footer",
+    element: <Footer />,
   },
 ]);
 
